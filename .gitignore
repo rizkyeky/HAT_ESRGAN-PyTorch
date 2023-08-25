@@ -1,0 +1,8 @@
+env/
+
+*.jpg
+*.pth
+*.png
+*.pyc
+*.mp4
+*.mdb
