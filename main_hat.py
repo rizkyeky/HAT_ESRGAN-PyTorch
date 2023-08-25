@@ -3,16 +3,7 @@ from copy import deepcopy
 import sys
 sys.path.append('hat_sr')
 
-# sys.argv.extend(['-opt', 'hat_sr/options/test/HAT_SRx4.yml'])
-
 from hat_sr.hat.archs.hat_arch import HAT
-# import hat.hat.data
-# import hat_sr.hat.models
-# import os.path as osp
-# from basicsr.models import build_model
-# from basicsr.models.sr_model import SRModel
-# from basicsr.archs import build_network
-# from basicsr.utils.options import dict2str, parse_options
 import torch
 import torchvision.transforms as transforms
 from PIL import Image
@@ -58,6 +49,7 @@ class HAT_SR(HAT):
         return output[:, :, 0:h - self.mod_pad_h * self.scale, 0:w - self.mod_pad_w * self.scale]
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = x.unsqueeze(0)
         x = self.pre_process(x)
         x = super().forward(x)
         x = self.post_process(x)
@@ -105,10 +97,8 @@ if __name__ == '__main__':
     model = model.to(device)
 
     image1 = Image.open('naruto.jpg')
-    ow, oh = image1.size
     # image1 = transforms.Resize((224,224))(image1)
     image1 = transforms.ToTensor()(image1)
-    image1 = image1.unsqueeze(0)
 
     start = time()
     model.eval()
@@ -120,10 +110,10 @@ if __name__ == '__main__':
     end = time()
     print(round(end - start, 3), 's')
 
-    output1 = output.squeeze(0)
-    output1 = transforms.ToPILImage()(output1)
-    # output1 = transforms.Resize((oh*4,ow*4))(output1)
-    output1.save('output2.jpg')
+    output = output.squeeze().float().cpu().clamp_(0, 1)
+    output = transforms.ToPILImage()(output)
+    # output = transforms.Resize((oh*4,ow*4))(output)
+    output.save('output2.jpg')
 
     # traced_model = torch.jit.trace(model, image1)
 
