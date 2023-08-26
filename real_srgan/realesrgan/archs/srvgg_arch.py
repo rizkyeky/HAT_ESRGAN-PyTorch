@@ -3,7 +3,7 @@ from torch import nn as nn
 from torch.nn import functional as F
 
 
-@ARCH_REGISTRY.register()
+# @ARCH_REGISTRY.register()
 class SRVGGNetCompact(nn.Module):
     """A compact VGG-style network structure for super-resolution.
 
@@ -57,7 +57,7 @@ class SRVGGNetCompact(nn.Module):
         # upsample
         self.upsampler = nn.PixelShuffle(upscale)
 
-    def forward(self, x):
+    def forward_vgg(self, x):
         out = x
         for i in range(0, len(self.body)):
             out = self.body[i](out)

@@ -55,14 +55,14 @@ class RealESRGANer():
             # dni
             assert len(model_path) == len(dni_weight), 'model_path and dni_weight should have the save length.'
             loadnet = self.dni(model_path[0], model_path[1], dni_weight)
-            print('DNI LOAD MODEL')
+            # print('DNI LOAD MODEL')
         else:
             # if the model_path starts with https, it will first download models to the folder: weights
             if model_path.startswith('https://'):
                 model_path = load_file_from_url(
                     url=model_path, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
             loadnet = torch.load(model_path, map_location=torch.device('cpu'))
-            print('1 LOAD MODEL')
+            # print('1 LOAD MODEL')
 
         # prefer to use params_ema
         if 'params_ema' in loadnet:

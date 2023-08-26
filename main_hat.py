@@ -90,42 +90,46 @@ if __name__ == '__main__':
     
     model = HAT_SR()
    
-    model_path = 'hat_sr/experiments/pretrained_models/Real_HAT_GAN_SRx4.pth'
-    loadnet = load_net_hat_sr(model_path)
+    model_path1 = 'hat_sr/experiments/pretrained_models/Real_HAT_GAN_SRx4.pth'
+    model_path2 = 'hat_sr/experiments/pretrained_models/HAT_SRx4_ImageNet-pretrain.pth'
+    loadnet = load_net_hat_sr(model_path1)
     model.load_state_dict(loadnet, strict=True)
 
     model = model.to(device)
 
-    image1 = Image.open('naruto.jpg')
-    # image1 = transforms.Resize((224,224))(image1)
-    image1 = transforms.ToTensor()(image1)
+    image = Image.open('seiyu.jpg')
+    # image = transforms.Resize((224,224))(image)
+    image = transforms.ToTensor()(image)
 
     start = time()
-    model.eval()
-    with torch.no_grad():
-        print('start')
-        output = model(image1)
-        print('end')
+    print('start')
 
+    # model.eval()
+    # with torch.no_grad():
+    #     output = model(image)
+
+    print('end')
     end = time()
     print(round(end - start, 3), 's')
 
-    output = output.squeeze().float().cpu().clamp_(0, 1)
-    output = transforms.ToPILImage()(output)
+    # output = output.squeeze().float().cpu().clamp_(0, 1)
+    # output = transforms.ToPILImage()(output)
     # output = transforms.Resize((oh*4,ow*4))(output)
-    output.save('output2.jpg')
+    # output.save('output_hat1.jpg')
 
-    # traced_model = torch.jit.trace(model, image1)
+    # traced_model = torch.jit.trace(model, image)
 
     # scripted_model = torch.jit.script(model)
     # optimized_model = optimize_for_mobile(scripted_model)
     # optimized_model.save('hat_sr.pt')
-
-    # torch.onnx.export(scripted_model,
-    #     image1,
-    #     "hat_sr.onnx",
-    #     input_names = ['input'],
-    #     output_names = ['output'],
-    #     # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
-    #     opset_version = 16,
-    # )
+    model.train(False)
+    model.cpu().eval()
+    with torch.no_grad():
+        torch.onnx.export(model,
+            image,
+            "hat_sr.onnx",
+            input_names = ['input'],
+            output_names = ['output'],
+            # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
+            opset_version = 16,
+        )

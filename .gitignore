@@ -6,3 +6,6 @@ env/
 *.pyc
 *.mp4
 *.mdb
+*.onnx
+*.pkl
+*.pt
