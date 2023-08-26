@@ -183,14 +183,14 @@ if __name__ == '__main__':
     # traced_model = torch.jit.trace(model, img)
 
     with torch.no_grad():
-        scripted_model = torch.jit.script(model)
-        optimized_model = optimize_for_mobile(scripted_model)
-        optimized_model.save('realesr_net.pt')
-        # torch.onnx.export(model,
-        #     img,
-        #     "realesr_net.onnx",
-        #     input_names = ['input'],
-        #     output_names = ['output'],
-        #     # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
-        #     opset_version = 16,
-        # )
+        # scripted_model = torch.jit.script(model)
+        # optimized_model = optimize_for_mobile(scripted_model)
+        # optimized_model.save('realesr_net.pt')
+        torch.onnx.export(model,
+            img,
+            "realesr_net.onnx",
+            input_names = ['input'],
+            output_names = ['output'],
+            # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
+            opset_version = 16,
+        )
