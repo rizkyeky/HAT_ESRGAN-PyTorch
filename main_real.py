@@ -156,7 +156,7 @@ if __name__ == '__main__':
     
     model = model.to(device)
 
-    img = Image.open('seiyu.jpg')
+    img = Image.open('eky.jpg')
     # ow, oh = img.size
     # # img = transforms.Resize((224,224))(img)
     img = transforms.ToTensor()(img)
@@ -164,33 +164,33 @@ if __name__ == '__main__':
     start = time()
     print('start')
 
-    # model.eval()
-    # with torch.no_grad():
-    #     output = model(img)
+    model.eval()
+    with torch.no_grad():
+        output = model(img)
 
     print('end')
     end = time()
     print(round(end - start, 3), 's')
 
-    # output = output.squeeze().float().cpu().clamp_(0, 1)
-    # output = transforms.ToPILImage()(output)
+    output = output.squeeze().float().cpu().clamp_(0, 1)
+    output = transforms.ToPILImage()(output)
     # output = transforms.Resize((oh*scale,ow*scale), interpolation=transforms.InterpolationMode.LANCZOS)(output)
-    # output.save('output_realsr_net.jpg')
+    output.save('output_realsr_net.jpg')
 
-    model.train(False)
-    model.cpu().eval()
+    # model.train(False)
+    # model.cpu().eval()
 
     # traced_model = torch.jit.trace(model, img)
 
-    with torch.no_grad():
-        # scripted_model = torch.jit.script(model)
-        # optimized_model = optimize_for_mobile(scripted_model)
-        # optimized_model.save('realesr_net.pt')
-        torch.onnx.export(model,
-            img,
-            "realesr_net.onnx",
-            input_names = ['input'],
-            output_names = ['output'],
-            # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
-            opset_version = 16,
-        )
+    # with torch.no_grad():
+    #     # scripted_model = torch.jit.script(model)
+    #     # optimized_model = optimize_for_mobile(scripted_model)
+    #     # optimized_model.save('realesr_net.pt')
+    #     torch.onnx.export(model,
+    #         img,
+    #         "realesr_net.onnx",
+    #         input_names = ['input'],
+    #         output_names = ['output'],
+    #         # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
+    #         opset_version = 16,
+    #     )

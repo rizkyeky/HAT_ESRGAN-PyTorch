@@ -97,39 +97,39 @@ if __name__ == '__main__':
 
     model = model.to(device)
 
-    image = Image.open('seiyu.jpg')
+    image = Image.open('eky.jpg')
     # image = transforms.Resize((224,224))(image)
     image = transforms.ToTensor()(image)
 
     start = time()
     print('start')
 
-    # model.eval()
-    # with torch.no_grad():
-    #     output = model(image)
+    model.eval()
+    with torch.no_grad():
+        output = model(image)
 
     print('end')
     end = time()
     print(round(end - start, 3), 's')
 
-    # output = output.squeeze().float().cpu().clamp_(0, 1)
-    # output = transforms.ToPILImage()(output)
+    output = output.squeeze().float().cpu().clamp_(0, 1)
+    output = transforms.ToPILImage()(output)
     # output = transforms.Resize((oh*4,ow*4))(output)
-    # output.save('output_hat1.jpg')
+    output.save('output_eky_hat1.jpg')
 
     # traced_model = torch.jit.trace(model, image)
 
     # scripted_model = torch.jit.script(model)
     # optimized_model = optimize_for_mobile(scripted_model)
     # optimized_model.save('hat_sr.pt')
-    model.train(False)
-    model.cpu().eval()
-    with torch.no_grad():
-        torch.onnx.export(model,
-            image,
-            "hat_sr.onnx",
-            input_names = ['input'],
-            output_names = ['output'],
-            # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
-            opset_version = 16,
-        )
+    # model.train(False)
+    # model.cpu().eval()
+    # with torch.no_grad():
+    #     torch.onnx.export(model,
+    #         image,
+    #         "hat_sr.onnx",
+    #         input_names = ['input'],
+    #         output_names = ['output'],
+    #         # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
+    #         opset_version = 16,
+    #     )
