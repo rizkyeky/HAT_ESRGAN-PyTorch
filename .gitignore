@@ -9,3 +9,4 @@ env/
 *.onnx
 *.pkl
 *.pt
+*.DS_Store

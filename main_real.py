@@ -56,7 +56,7 @@ class RealSR_VGGNet(SRVGGNetCompact):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = x.unsqueeze(0)
         x = self.pre_process(x)
-        x = self.forward_vgg(x)
+        x = super().forward(x)
         x = self.post_process(x)
         return x
     
@@ -156,8 +156,8 @@ if __name__ == '__main__':
     
     model = model.to(device)
 
-    img = Image.open('eky.jpg')
-    # ow, oh = img.size
+    img = Image.open('eky_resized.jpg')
+    ow, oh = img.size
     # # img = transforms.Resize((224,224))(img)
     img = transforms.ToTensor()(img)
     
@@ -174,8 +174,8 @@ if __name__ == '__main__':
 
     output = output.squeeze().float().cpu().clamp_(0, 1)
     output = transforms.ToPILImage()(output)
-    # output = transforms.Resize((oh*scale,ow*scale), interpolation=transforms.InterpolationMode.LANCZOS)(output)
-    output.save('output_realsr_net.jpg')
+    output = transforms.Resize((oh,ow), interpolation=transforms.InterpolationMode.LANCZOS)(output)
+    output.save('output_eky_realsr_net.jpg')
 
     # model.train(False)
     # model.cpu().eval()
