@@ -15,6 +15,7 @@ from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
 def main():
     """Inference demo for Real-ESRGAN.
+    python hat/inference_realesrgan.py -i eky.jpg -n RealESRNet_x4plus -o results -g 0 -s 4 --face_enhance --fp32
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, default='inputs', help='Input image or folder')

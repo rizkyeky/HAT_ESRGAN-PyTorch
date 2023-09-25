@@ -10,6 +10,7 @@ from PIL import Image
 from time import time
 from torch.nn import functional as F
 from torch.utils.mobile_optimizer import optimize_for_mobile
+from torch import autocast
 
 class HAT_SR(HAT):
     def __init__(self, scale=4):
@@ -86,7 +87,8 @@ def load_net_hat_sr(model_path: str):
 
 if __name__ == '__main__':
     
-    device = torch.device('cpu')
+    withGpu =  torch.cuda.is_available()
+    device = torch.device('cuda' if withGpu else 'cpu')
     
     model = HAT_SR()
    
@@ -105,8 +107,10 @@ if __name__ == '__main__':
     print('start')
 
     model.eval()
-    with torch.no_grad():
-        output = model(image)
+    with autocast:
+        with torch.no_grad():
+            if withGpu: image = image.cuda()
+            output = model(image)
 
     print('end')
     end = time()
@@ -116,20 +120,3 @@ if __name__ == '__main__':
     output = transforms.ToPILImage()(output)
     # output = transforms.Resize((oh*4,ow*4))(output)
     output.save('output_eky_hat1.jpg')
-
-    # traced_model = torch.jit.trace(model, image)
-
-    # scripted_model = torch.jit.script(model)
-    # optimized_model = optimize_for_mobile(scripted_model)
-    # optimized_model.save('hat_sr.pt')
-    # model.train(False)
-    # model.cpu().eval()
-    # with torch.no_grad():
-    #     torch.onnx.export(model,
-    #         image,
-    #         "hat_sr.onnx",
-    #         input_names = ['input'],
-    #         output_names = ['output'],
-    #         # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
-    #         opset_version = 16,
-    #     )

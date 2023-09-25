@@ -54,7 +54,7 @@ class RealSR_VGGNet(SRVGGNetCompact):
         return output
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = x.unsqueeze(0)
+        assert len(x.shape) == 4
         x = self.pre_process(x)
         x = super().forward(x)
         x = self.post_process(x)
@@ -100,7 +100,7 @@ class RealESR(RRDBNet):
         return output
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = x.unsqueeze(0)
+        assert len(x.shape) == 4
         x = self.pre_process(x)
         x = super().forward(x)
         x = self.post_process(x)
@@ -176,21 +176,3 @@ if __name__ == '__main__':
     output = transforms.ToPILImage()(output)
     output = transforms.Resize((oh,ow), interpolation=transforms.InterpolationMode.LANCZOS)(output)
     output.save('output_eky_realsr_net.jpg')
-
-    # model.train(False)
-    # model.cpu().eval()
-
-    # traced_model = torch.jit.trace(model, img)
-
-    # with torch.no_grad():
-    #     # scripted_model = torch.jit.script(model)
-    #     # optimized_model = optimize_for_mobile(scripted_model)
-    #     # optimized_model.save('realesr_net.pt')
-    #     torch.onnx.export(model,
-    #         img,
-    #         "realesr_net.onnx",
-    #         input_names = ['input'],
-    #         output_names = ['output'],
-    #         # dynamic_axes = {'input': {1:'width', 2:'height'}, 'output':{1:'width', 2:'height'}}, 
-    #         opset_version = 16,
-    #     )
