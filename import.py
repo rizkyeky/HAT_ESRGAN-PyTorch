@@ -1,5 +1,5 @@
-import onnx
-import torch
+# import onnx
+# import torch
 import onnxruntime
 import numpy as np
 import cv2
